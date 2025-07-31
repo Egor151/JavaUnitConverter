@@ -1,4 +1,4 @@
-package converter.entity;
+package entity;
 
 public enum Length {
     METER(1.0),

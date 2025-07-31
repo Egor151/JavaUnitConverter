@@ -1,4 +1,4 @@
-package converter.entity;
+package entity;
 
 public enum Weight {
     KILOGRAM(1.0),

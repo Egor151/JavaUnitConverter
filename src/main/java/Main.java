@@ -2,11 +2,12 @@ import converter.BaseConverter;
 import converter.LengthConverter;
 import converter.TemperatureConverter;
 import converter.WeightConverter;
-import converter.entity.Length;
-import converter.entity.Temperature;
-import converter.entity.Weight;
-import converter.exception.ConversionException;
+import entity.Length;
+import entity.Temperature;
+import entity.Weight;
+import exception.ConversionException;
 
+import javax.xml.crypto.dom.DOMCryptoContext;
 import java.util.Scanner;
 
 public class Main {
@@ -39,9 +40,12 @@ public class Main {
                 } catch (NumberFormatException e) {
                     throw new ConversionException("Invalid value: " + parts[1]);
                 }
-                BaseConverter<?> converter = getConverter(category);
-                String result = convert(converter, value, parts[2], parts[3]);
-                System.out.println(result);
+
+                BaseConverter converter = getConverter(category);
+                double result = converter.convert(value, parts[2], parts[3]);
+                System.out.printf("%.2f %s = %.2f %s%n",
+                        value, parts[2],
+                        result, parts[3]);
 
             } catch (ConversionException e) {
                 System.out.println("Error: " + e.getMessage());
@@ -57,37 +61,5 @@ public class Main {
             case "weight" -> new WeightConverter();
             default -> throw new ConversionException("Unknown category: '" + category + "'");
         };
-    }
-
-    private static <T extends Enum<T>> String convert(BaseConverter<T> converter, double value, String fromUnitStr,
-                                                      String toUnitStr) throws ConversionException {
-        Class<T> enumClass = getEnumClass(converter);
-        T fromUnit = parseUnit(enumClass, fromUnitStr);
-        T toUnit = parseUnit(enumClass, toUnitStr);
-
-        double result = converter.convert(value, fromUnit, toUnit);
-        return String.format("%.2f %s = %.2f %s",
-                value, fromUnit.toString().toUpperCase(),
-                result, toUnit.toString().toUpperCase());
-    }
-
-    @SuppressWarnings("unchecked")
-    private static <T extends Enum<T>> Class<T> getEnumClass(BaseConverter<T> converter) {
-        if (converter instanceof LengthConverter) {
-            return (Class<T>) Length.class;
-        } else if (converter instanceof TemperatureConverter) {
-            return (Class<T>) Temperature.class;
-        } else if (converter instanceof WeightConverter) {
-            return (Class<T>) Weight.class;
-        }
-        throw new IllegalArgumentException("Unknown converter type");
-    }
-
-    private static <T extends Enum<T>> T parseUnit(Class<T> enumClass, String unitStr) throws ConversionException {
-        try {
-            return Enum.valueOf(enumClass, unitStr.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new ConversionException("Unknown unit: '" + unitStr + "' for category");
-        }
     }
 }

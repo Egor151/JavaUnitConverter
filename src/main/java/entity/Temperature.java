@@ -1,4 +1,4 @@
-package converter.entity;
+package entity;
 
 public enum Temperature {
     CELSIUS,

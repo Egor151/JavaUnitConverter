@@ -1,4 +1,4 @@
-package converter.exception;
+package exception;
 
 public class ConversionException  extends  Exception {
     public ConversionException(String message) {
