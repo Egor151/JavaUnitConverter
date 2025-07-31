@@ -2,12 +2,8 @@ import converter.BaseConverter;
 import converter.LengthConverter;
 import converter.TemperatureConverter;
 import converter.WeightConverter;
-import entity.Length;
-import entity.Temperature;
-import entity.Weight;
 import exception.ConversionException;
 
-import javax.xml.crypto.dom.DOMCryptoContext;
 import java.util.Scanner;
 
 public class Main {
@@ -41,7 +37,7 @@ public class Main {
                     throw new ConversionException("Invalid value: " + parts[1]);
                 }
 
-                BaseConverter converter = getConverter(category);
+                BaseConverter<?> converter = getConverter(category);
                 double result = converter.convert(value, parts[2], parts[3]);
                 System.out.printf("%.2f %s = %.2f %s%n",
                         value, parts[2],
