@@ -4,10 +4,6 @@ import entity.Temperature;
 import exception.ConversionException;
 
 public class TemperatureConverter implements BaseConverter<Temperature> {
-    private static final double ABSOLUTE_ZERO_CELSIUS = -273.15;
-    private static final double ABSOLUTE_ZERO_FAHRENHEIT = -459.67;
-    private static final double ABSOLUTE_ZERO_KELVIN = 0.0;
-
     @Override
     public double convert(double value, String fromUnit, String toUnit) throws ConversionException {
         Temperature from = parseUnit(fromUnit);
@@ -42,30 +38,12 @@ public class TemperatureConverter implements BaseConverter<Temperature> {
     }
 
     private void validateTemperature(double value, Temperature unit) throws ConversionException {
-        switch (unit) {
-            case CELSIUS:
-                if (value < ABSOLUTE_ZERO_CELSIUS) {
-                    throw new ConversionException(
-                            String.format("Temperature cannot be below %.2f°C", ABSOLUTE_ZERO_CELSIUS)
-                    );
-                }
-                break;
-            case FAHRENHEIT:
-                if (value < ABSOLUTE_ZERO_FAHRENHEIT) {
-                    throw new ConversionException(
-                            String.format("Temperature cannot be below %.2f°F", ABSOLUTE_ZERO_FAHRENHEIT)
-                    );
-                }
-                break;
-            case KELVIN:
-                if (value < ABSOLUTE_ZERO_KELVIN) {
-                    throw new ConversionException(
-                            String.format("Temperature cannot be below %.2fK", ABSOLUTE_ZERO_KELVIN)
-                    );
-                }
-                break;
-            default:
-                throw new ConversionException("Unknown temperature unit: " + unit);
+        if (value < unit.getAbsoluteZero()) {
+            throw new ConversionException(
+                    String.format("Temperature cannot be below %.2f for %s",
+                            unit.getAbsoluteZero(),
+                            unit.name().toLowerCase())
+            );
         }
     }
 
